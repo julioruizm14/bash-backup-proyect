@@ -1,64 +1,64 @@
 # **Bash Backup Project**
 
-Este script de Bash es una herramienta de respaldo automatizada diseñada para identificar, comprimir y archivar **únicamente los archivos que han sido modificados o creados en las últimas 24 horas** dentro de un directorio específico.
+This Bash script is an automated backup tool designed to identify, compress, and archive **only files that have been modified or created in the last 24 hours** within a specific directory.
 
-Es ideal para realizar copias de seguridad diarias de trabajos en curso sin duplicar archivos antiguos que no han cambiado.
+It is ideal for performing daily backups of work-in-progress without duplicating old files that haven't changed.
 
-## **🚀 Funcionalidades Clave**
+## **🚀 Key Features**
 
-* **Filtrado por Tiempo:** Calcula la fecha actual y selecciona solo los archivos con una fecha de modificación posterior a hace 24 horas (currentTS \- 24h).  
-* **Validación de Entradas:** Verifica que se pasen exactamente dos argumentos y que ambos sean directorios válidos antes de ejecutarse.  
-* **Nombres Únicos:** Genera archivos de respaldo con formato backup-\[TIMESTAMP\].tar.gz (usando tiempo Unix) para evitar sobrescrituras.  
-* **Manejo de Rutas:** Gestiona rutas absolutas y relativas internamente para asegurar que el archivo comprimido se mueva al destino correcto sin importar desde dónde se ejecute el script.
+* **Time Filtering:** Calculates the current date and selects only files with a modification date later than 24 hours ago (currentTS \- 24h).  
+* **Input Validation:** Verifies that exactly two arguments are passed and that both are valid directories before execution.  
+* **Unique Naming:** Generates backup files with the format backup-\[TIMESTAMP\].tar.gz (using Unix time) to prevent overwrites.  
+* **Path Handling:** Manages absolute and relative paths internally to ensure the compressed file is moved to the correct destination regardless of where the script is executed from.
 
-## **📋 Requisitos**
+## **📋 Requirements**
 
-* Entorno Unix/Linux/macOS.  
-* Intérprete **Bash**.  
-* Herramienta de compresión **tar**.
+* Unix/Linux/macOS environment.  
+* **Bash** interpreter.  
+* **tar** compression tool.
 
-## **💻 Uso Manual**
+## **💻 Manual Usage**
 
-El script requiere dos argumentos obligatorios: el directorio de origen (qué revisar) y el directorio de destino (dónde guardar el backup).
+The script requires two mandatory arguments: the source directory (what to check) and the destination directory (where to save the backup).
 
-./backup.sh \<directorio\_origen\> \<directorio\_destino\>
+./backup.sh \<source\_directory\> \<destination\_directory\>
 
-### **Ejemplo**
+### **Example**
 
-Supongamos que tienes una carpeta proyectos y quieres guardar los cambios de hoy en backups:
+Suppose you have a projects folder and want to save today's changes into backups:
 
-./backup.sh ./proyectos ./backups
+./backup.sh ./projects ./backups
 
-## **🤖 Automatización (CronJob)**
+## **🤖 Automation (CronJob)**
 
-Para que este script sea realmente útil, puedes configurarlo para que se ejecute automáticamente cada 24 horas usando cron.
+To make this script truly useful, you can configure it to run automatically every 24 hours using cron.
 
-1. Mueve el script a una carpeta del sistema (opcional pero recomendado):  
+1. Move the script to a system folder (optional but recommended):  
    sudo cp backup.sh /usr/local/bin/
 
-2. Abre el editor de tareas programadas:  
+2. Open the scheduled tasks editor:  
    crontab \-e
 
-3. Añade la siguiente línea al final del archivo para ejecutar el backup **todos los días a medianoche**:  
-   0 0 \* \* \* /usr/local/bin/backup.sh /ruta/a/mis\_datos /ruta/a/mis\_backups
+3. Add the following line at the end of the file to run the backup **every day at midnight**:  
+   0 0 \* \* \* /usr/local/bin/backup.sh /path/to/my\_data /path/to/my\_backups
 
-*Nota: Asegúrate de usar rutas absolutas (ej: /home/usuario/docs) tanto para el script como para las carpetas en el comando de cron.*
+*Note: Make sure to use absolute paths (e.g., /home/user/docs) for both the script and the folders in the cron command.*
 
-## **⚙️ Explicación Técnica del Código**
+## **⚙️ Technical Explanation**
 
-El script realiza los siguientes pasos lógicos:
+The script performs the following logical steps:
 
-1. **Validación:** Comprueba si NumArgs \== 2 y si los directorios existen (-d).  
-2. **Marcas de Tiempo:** Obtiene el tiempo actual en formato Unix (date \+%s) y calcula el umbral de 24 horas atrás.  
-3. **Resolución de Rutas:** Guarda la ruta absoluta del destino para poder mover el archivo final correctamente después de cambiar de directorio con cd.  
-4. **Bucle de Selección:**  
-   * Entra al directorio objetivo.  
-   * Itera sobre cada archivo (for file in \*).  
-   * Compara la fecha de modificación del archivo con la variable $yesterdayTS.  
-   * Si es reciente, lo añade al array toBackup.  
-5. **Compresión:** Ejecuta tar solo con los archivos listados en el array toBackup.
+1. **Validation:** Checks if NumArgs \== 2 and if the directories exist (-d).  
+2. **Timestamps:** Gets the current time in Unix format (date \+%s) and calculates the threshold for 24 hours ago.  
+3. **Path Resolution:** Saves the absolute path of the destination to correctly move the final file after changing directories with cd.  
+4. **Selection Loop:**  
+   * Enters the target directory.  
+   * Iterates over each file (for file in \*).  
+   * Compares the file's modification date with the $yesterdayTS variable.  
+   * If it is recent, it adds it to the toBackup array.  
+5. **Compression:** Executes tar only with the files listed in the toBackup array.
 
-## **⚠️ Notas Importantes**
+## **⚠️ Important Notes**
 
-* Si ningún archivo ha sido modificado en las últimas 24 horas, el comando tar podría generar un error o crear un archivo vacío (dependiendo de la versión de tar), ya que el array de archivos estará vacío.  
-* El script no es recursivo por defecto en la selección (el bucle for file in \* revisa archivos en la raíz del directorio objetivo, pero tar sí incluirá carpetas si estas fueron modificadas recientemente).
+* If no files have been modified in the last 24 hours, the tar command might generate an error or create an empty archive (depending on the tar version), as the file array will be empty.  
+* The script is not recursive by default in its selection (the for file in \* loop checks files in the root of the target directory, but tar will include folders if they were recently modified).
