@@ -1,4 +1,3 @@
 # Bash Backup Project
 
-Este es un script de Bash para realizar copias de seguridad de un directorio a otro.
-Es parte del proyecto final del curso.
+This is a Bash script for creating backups from one directory to another. It's part of the final project for the course.
