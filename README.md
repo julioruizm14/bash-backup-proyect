@@ -4,20 +4,20 @@ This Bash script is an automated backup tool designed to identify, compress, and
 
 It is ideal for performing daily backups of work-in-progress without duplicating old files that haven't changed.
 
-## **🚀 Key Features**
+## **1. Key Features**
 
 * **Time Filtering:** Calculates the current date and selects only files with a modification date later than 24 hours ago (currentTS \- 24h).  
 * **Input Validation:** Verifies that exactly two arguments are passed and that both are valid directories before execution.  
 * **Unique Naming:** Generates backup files with the format backup-\[TIMESTAMP\].tar.gz (using Unix time) to prevent overwrites.  
 * **Path Handling:** Manages absolute and relative paths internally to ensure the compressed file is moved to the correct destination regardless of where the script is executed from.
 
-## **📋 Requirements**
+## **2. Requirements**
 
 * Unix/Linux/macOS environment.  
 * **Bash** interpreter.  
 * **tar** compression tool.
 
-## **💻 Manual Usage**
+## **3. Manual Usage**
 
 The script requires two mandatory arguments: the source directory (what to check) and the destination directory (where to save the backup).
 
@@ -29,7 +29,7 @@ Suppose you have a projects folder and want to save today's changes into backups
 
 ./backup.sh ./projects ./backups
 
-## **🤖 Automation (CronJob)**
+## **4. Automation (CronJob)**
 
 To make this script truly useful, you can configure it to run automatically every 24 hours using cron.
 
@@ -44,7 +44,7 @@ To make this script truly useful, you can configure it to run automatically ever
 
 *Note: Make sure to use absolute paths (e.g., /home/user/docs) for both the script and the folders in the cron command.*
 
-## **⚙️ Technical Explanation**
+## **5. Technical Explanation**
 
 The script performs the following logical steps:
 
@@ -58,7 +58,7 @@ The script performs the following logical steps:
    * If it is recent, it adds it to the toBackup array.  
 5. **Compression:** Executes tar only with the files listed in the toBackup array.
 
-## **⚠️ Important Notes**
+## **6. Important Notes**
 
 * If no files have been modified in the last 24 hours, the tar command might generate an error or create an empty archive (depending on the tar version), as the file array will be empty.  
 * The script is not recursive by default in its selection (the for file in \* loop checks files in the root of the target directory, but tar will include folders if they were recently modified).
